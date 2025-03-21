@@ -1,11 +1,10 @@
-from sympy import Eq, symbols, solve, sympify
+from sympy import Eq, symbols, solve, sympify, Rational
 
 def verify_solution_steps_sympy(equations, steps, final_solution):
     
     x,y=symbols("x y")
     
     try:
-        solve(equations,(x,y))
         eqs=[]
         for eq in equations:
             lhs,rhs=eq.split("=")
@@ -15,6 +14,8 @@ def verify_solution_steps_sympy(equations, steps, final_solution):
         
         if correct_ans != final_solution:
             print(f"Incorrect final solution. Expected: {correct_ans}, but got: {final_solution}.")
+        else:
+            print("Answer is correct lets check for steps")
 
         for step in steps:
             try:
@@ -30,8 +31,15 @@ def verify_solution_steps_sympy(equations, steps, final_solution):
 
 
 equations = ["2*x + 3*y = 5", "4*x - y = 7"]
-steps = ["y = (5 - 2*x)/3", "Substituting into 4*x - y = 7", "4*x - (5 - 2*x)/3 = 7", "x = 2", "y = -1"]
-final_solution = {symbols("x"): 2, symbols("y"): -1}  # Correct answer
+steps = [
+    "Step 1: y = (5 - 2*x)/3",
+    "Step 2: Substituting into 4*x - y = 7",
+    "Step 3: 4*x - (5 - 2*x)/3 = 7",
+    "Step 4: Solve for x, x = 13/7",
+    "Step 5: Solve for y, y = 3/7"
+]
+
+final_solution = {symbols("x"): Rational(13, 7), symbols("y"): Rational(3,7)}  # Correct answer
 
 result = verify_solution_steps_sympy(equations, steps, final_solution)
 print(result)
