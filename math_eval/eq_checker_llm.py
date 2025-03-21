@@ -20,9 +20,13 @@ def check_equivalence_locally(expr1, expr2):
     """Check if two expressions are equivalent using SymPy."""
     x = symbols("x")  # Define the variable
     try:
-        expr1_sym = sympify(expr1)  # Convert string to symbolic expression
-        expr2_sym = sympify(expr2)
-        return simplify(Eq(expr1_sym, expr2_sym))
+        left1, right1 = expr1.split("=")  # Split equation into LHS and RHS
+        left2, right2 = expr2.split("=")
+
+        eq1 = Eq(sympify(left1), sympify(right1))
+        eq2 = Eq(sympify(left2), sympify(right2))
+
+        return simplify(eq1.lhs - eq1.rhs) == simplify(eq2.lhs - eq2.rhs)
     except Exception as e:
         print(f"⚠️ SymPy Error: {e}. Falling back to LLM check.")
         return None  # Indicates failure, so LLM should be used
@@ -66,7 +70,7 @@ def check_equivalence_with_deepseek(expr1, expr2):
         return None
 
 # Example usage
-expression1 = "2*x + 3*x - 5 = 9"
+expression1 = "2*x + 3*x -1 = 9"
 expression2 = "5*x - 10 = 0"
 
 # Step 1: Try local checking first
